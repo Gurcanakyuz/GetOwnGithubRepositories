@@ -9,6 +9,9 @@ USERNAME=ExampleUser
 
 # Personal Access Token
 PERSONAL_ACCESS_TOKEN=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+# Cache is Active/Deactive
+CACHE=1
 ```
 
 ### Console Usage
