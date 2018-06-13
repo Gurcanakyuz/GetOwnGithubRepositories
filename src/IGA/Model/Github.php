@@ -35,10 +35,14 @@ class Github
     public function getRepos()
     {
 
-        $cache = new Cache();
-        $cachedData = $cache->get();
+        $cacheIsActive = (bool) (isset($_SERVER['APP_ENV']['CACHE'])) ? $_SERVER['APP_ENV']['CACHE'] : 1;
 
-        if(empty($cachedData)) {
+        if($cacheIsActive) {
+            $cache = new Cache();
+            $cachedData = $cache->get();
+        }
+
+        if(empty($cachedData) || !$cacheIsActive) {
             $ch = curl_init();
 
             curl_setopt($ch, CURLOPT_USERAGENT, 'Agent IGA');
@@ -54,8 +58,12 @@ class Github
             $output = curl_exec($ch);
             curl_close($ch);
 
-            $cache->set($output);
-            $cachedData = $cache->get();
+            if($cacheIsActive) {
+                $cache->set($output);
+                $cachedData = $cache->get();
+            } else {
+                $cachedData = $output;
+            }
 
         }
 
