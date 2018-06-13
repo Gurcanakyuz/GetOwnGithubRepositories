@@ -1,0 +1,43 @@
+#!/usr/bin/env php
+<?php
+/**
+ * Project: GetOwnGithubRepositories
+ * Author: Gurcan
+ * Date: 12.06.2018
+ * Time: 23:18
+ * File: list.php
+ */
+
+use IGA\Controller\Github;
+use IGA\Dotenv\Dotenv;
+
+function autoload($className)
+{
+    $dir 		= __DIR__.'/../src/';
+    $classPath 	= $dir.$className.'.php';
+
+    include($classPath);
+}
+
+spl_autoload_register('autoload');
+
+if (!isset($_SERVER['APP_ENV'])) {
+    if (!class_exists(Dotenv::class)) {
+        throw new \RuntimeException('.env dosyas? bulunamad?.');
+    }
+    (new Dotenv(__DIR__ . "/../"))->load();
+}
+
+$github = new Github();
+$repositoryList = $github->getRepositoryList();
+
+echo "==\n";
+echo "== Repository List\n";
+echo "==\n";
+$i=1;
+foreach ($repositoryList as $index => $repository) {
+    echo "== {$i}. {$repository->name} ({$repository->url}, {$repository->language}, {$repository->stargazers_count} Stars)\n";
+    $i++;
+}
+
+echo "==\n";
